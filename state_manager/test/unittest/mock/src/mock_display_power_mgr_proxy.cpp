@@ -193,6 +193,7 @@ int32_t MockDisplayPowerMgrProxy::SetScreenPowerOffStrategy(uint32_t strategy, u
     const sptr<IRemoteObject>& token, int32_t& result)
 {
     if (strategy == static_cast<uint32_t>(PowerOffStrategy::STRATEGY_SPECIFIC)) {
+        result = 0;
         return ERR_OK;
     }
     return ERR_FAIL;
