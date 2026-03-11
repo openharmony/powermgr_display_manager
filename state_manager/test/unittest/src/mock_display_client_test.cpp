@@ -492,13 +492,13 @@ HWTEST_F(DisplayPowerMgrClientMockTest, DisplayPowerMgrClient030, TestSize.Level
     DISPLAY_HILOGI(LABEL_TEST, "DisplayPowerMgrClient030 function start!");
     auto ret = mClient.SetScreenPowerOffStrategy(PowerOffStrategy::STRATEGY_ALL,
         PowerMgr::StateChangeReason::STATE_CHANGE_REASON_UNKNOWN);
-    EXPECT_NE(ret, DisplayErrors::ERR_OK);
+    EXPECT_EQ(ret, DisplayErrors::ERR_CONNECTION_FAIL);
     ret = mClient.SetScreenPowerOffStrategy(static_cast<PowerOffStrategy>(-1), // -1 is invalid PowerOffStrategy
         PowerMgr::StateChangeReason::STATE_CHANGE_REASON_UNKNOWN);
-    EXPECT_NE(ret, DisplayErrors::ERR_OK);
+    EXPECT_EQ(ret, DisplayErrors::ERR_PARAM_INVALID);
     ret = mClient.SetScreenPowerOffStrategy(static_cast<PowerOffStrategy>(4), // 4 is invalid PowerOffStrategy
         PowerMgr::StateChangeReason::STATE_CHANGE_REASON_UNKNOWN);
-    EXPECT_NE(ret, DisplayErrors::ERR_OK);
+    EXPECT_EQ(ret, DisplayErrors::ERR_PARAM_INVALID);
     ret = mClient.SetScreenPowerOffStrategy(PowerOffStrategy::STRATEGY_SPECIFIC,
         PowerMgr::StateChangeReason::STATE_CHANGE_REASON_WIRED_APPCAST);
     EXPECT_EQ(ret, DisplayErrors::ERR_OK);
