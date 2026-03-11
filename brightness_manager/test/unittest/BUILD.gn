@@ -68,11 +68,11 @@ ohos_unittest("brightness_manager_ext_test") {
 
   include_dirs = [ "./include/" ]
 
-  defines += [ "private=public" ]
-
   if (has_hiviewdfx_hisysevent_part) {
     external_deps += [ "hisysevent:libhisysevent" ]
   }
+
+  defines += [ "private=public" ]
 }
 
 ohos_unittest("brightness_manager_test") {

@@ -120,6 +120,11 @@ bool DisplayManagerLite::SetDisplayState(DisplayState state, DisplayStateCallbac
     return true;
 }
 
+bool DisplayManagerLite::SetScreenBrightness(uint64_t screenId, uint32_t level)
+{
+    return true;
+}
+
 ScreenPowerState ScreenManagerLite::GetScreenPower()
 {
     return g_powerState;
@@ -468,17 +473,17 @@ HWTEST_F(DisplayServiceTest, DisplayServiceTest013, TestSize.Level0)
 }
 
 /**
- * @tc.name: DisplayServiceTest014
+ * @tc.name: DisplayServiceTest031
  * @tc.desc: test set screen diaplay state
  * @tc.type: FUNC
  */
-HWTEST_F(DisplayServiceTest, DisplayServiceTest014, TestSize.Level1)
+HWTEST_F(DisplayServiceTest, DisplayServiceTest031, TestSize.Level1)
 {
-    DISPLAY_HILOGI(LABEL_TEST, "DisplayServiceTest014 function start!");
+    DISPLAY_HILOGI(LABEL_TEST, "DisplayServiceTest031 function start!");
     EXPECT_TRUE(g_service != nullptr);
     ASSERT_TRUE(g_brightnessServiceMock != nullptr);
     EXPECT_CALL(*g_brightnessServiceMock, SetScreenOnBrightness());
-    
+
     ErrCode ret = ERR_OK;
     g_isPermissionGranted = false;
     ret = g_service->SetScreenDisplayState(0, static_cast<uint32_t>(DisplayPowerMgr::DisplayState::DISPLAY_ON), 0);
@@ -496,7 +501,7 @@ HWTEST_F(DisplayServiceTest, DisplayServiceTest014, TestSize.Level1)
     ret = g_service->SetScreenDisplayState(0, static_cast<uint32_t>(DisplayPowerMgr::DisplayState::DISPLAY_ON),
         static_cast<uint32_t>(Rosen::PowerStateChangeReason::STATE_CHANGE_REASON_UNKNOWN));
     EXPECT_EQ(ret, static_cast<ErrCode>(DisplayErrors::ERR_PARAM_INVALID));
-    DISPLAY_HILOGI(LABEL_TEST, "DisplayServiceTest014 function end!");
+    DISPLAY_HILOGI(LABEL_TEST, "DisplayServiceTest031 function end!");
 }
 
 #ifdef ENABLE_SCREEN_POWER_OFF_STRATEGY
@@ -515,12 +520,12 @@ HWTEST_F(DisplayServiceTest, DisplayServiceTest032, TestSize.Level1)
     g_isPermissionGranted = false;
     g_service->SetScreenPowerOffStrategy(static_cast<uint32_t>(PowerOffStrategy::STRATEGY_ALL),
         static_cast<uint32_t>(PowerMgr::StateChangeReason::STATE_CHANGE_REASON_UNKNOWN), token, ret);
-    EXPECT_FALSE(ret);
- 
+    EXPECT_EQ(ret, static_cast<int32_t>(DisplayErrors::ERR_SYSTEM_API_DENIED));
+
     g_isPermissionGranted = true;
     g_service->SetScreenPowerOffStrategy(static_cast<uint32_t>(PowerOffStrategy::STRATEGY_SPECIFIC),
         static_cast<uint32_t>(PowerMgr::StateChangeReason::STATE_CHANGE_REASON_WIRED_APPCAST), token, ret);
-    EXPECT_TRUE(ret);
+    EXPECT_EQ(ret, static_cast<int32_t>(DisplayErrors::ERR_OK));
     DISPLAY_HILOGI(LABEL_TEST, "DisplayServiceTest032 function end!");
 }
  
@@ -539,18 +544,18 @@ HWTEST_F(DisplayServiceTest, DisplayServiceTest033, TestSize.Level1)
     token->isProxyObject_ = true;
     g_service->SetScreenPowerOffStrategy(static_cast<uint32_t>(PowerOffStrategy::STRATEGY_SPECIFIC),
         static_cast<uint32_t>(PowerMgr::StateChangeReason::STATE_CHANGE_REASON_WIRED_APPCAST), token, ret);
-    EXPECT_TRUE(ret);
+    EXPECT_EQ(ret, static_cast<int32_t>(DisplayErrors::ERR_OK));
     sptr<MockRemoteObject> tokenTwo = new MockRemoteObject();
     tokenTwo->isProxyObject_ = true;
     g_service->SetScreenPowerOffStrategy(static_cast<uint32_t>(PowerOffStrategy::STRATEGY_SPECIFIC),
     static_cast<uint32_t>(PowerMgr::StateChangeReason::STATE_CHANGE_REASON_WIRED_APPCAST), tokenTwo, ret);
-    EXPECT_TRUE(ret);
+    EXPECT_EQ(ret, static_cast<int32_t>(DisplayErrors::ERR_OK));
     token->isProxyObject_ = false;
     g_service->SetScreenPowerOffStrategy(static_cast<uint32_t>(PowerOffStrategy::STRATEGY_SPECIFIC),
         static_cast<uint32_t>(PowerMgr::StateChangeReason::STATE_CHANGE_REASON_WIRED_APPCAST), token, ret);
     token = nullptr;
     tokenTwo = nullptr;
-    EXPECT_TRUE(ret);
+    EXPECT_EQ(ret, static_cast<int32_t>(DisplayErrors::ERR_OK));
     DISPLAY_HILOGI(LABEL_TEST, "DisplayServiceTest033 function end!");
 }
  
@@ -572,6 +577,11 @@ HWTEST_F(DisplayServiceTest, DisplayServiceTest034, TestSize.Level1)
     EXPECT_NE(deathRecipient, nullptr);
     wptr<IRemoteObject> remoteObj = new MockRemoteObject();
     deathRecipient->OnRemoteDied(remoteObj);
+    wptr<IRemoteObject> mockRemote = new MockRemoteObject();
+    sptr<DisplayPowerMgrService::InvokerDeathRecipient> nullDeathRecipient =
+        sptr<DisplayPowerMgrService::InvokerDeathRecipient>::MakeSptr(__func__, nullptr);
+    nullDeathRecipient->OnRemoteDied(mockRemote);
+    mockRemote = nullptr;
     remoteObj = nullptr;
     deathRecipient->OnRemoteDied(remoteObj);
     EXPECT_EQ(remoteObj, nullptr);
