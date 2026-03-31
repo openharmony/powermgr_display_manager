@@ -82,6 +82,18 @@ ohos_unittest("brightness_manager_test") {
   deps += [ "${brightnessmgr_root_path}:brightness_manager" ]
 }
 
+ohos_unittest("brightness_light_lux_buffer_test") {
+  sources = [
+    "../../src/light_lux_buffer.cpp",
+    "./src/brightness_light_lux_buffer_test.cpp",
+  ]
+
+  include_dirs = [ "../../include/" ]
+
+  defines += [ "DISPLAYMGR_GTEST" ]
+  deps += [ "${brightnessmgr_root_path}:brightness_manager" ]
+}
+
 ohos_unittest("brightness_service_test") {
   sources = [ "./src/brightness_service_test.cpp" ]
 
@@ -115,6 +127,7 @@ group("unittest") {
     ":brightness_manager_test",
     ":brightness_service_test",
     ":brightness_service_advanced_test",
+    ":brightness_light_lux_buffer_test",
   ]
   if (display_manager_feature_brightnessext != "") {
     deps += [ ":brightness_manager_ext_test" ]
