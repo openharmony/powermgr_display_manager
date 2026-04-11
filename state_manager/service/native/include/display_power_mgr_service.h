@@ -200,6 +200,7 @@ private:
     std::shared_ptr<PowerMgr::FFRTQueue> queue_;
     bool isInTestMode_ {false};
     std::once_flag initFlag_;
+    ffrt::mutex screenOffDelayTaskMutex_;
 };
 } // namespace DisplayPowerMgr
 } // namespace OHOS
