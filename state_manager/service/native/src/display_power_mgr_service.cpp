@@ -115,6 +115,7 @@ void DisplayPowerMgrService::Reset()
     DISPLAY_HILOGI(FEAT_BRIGHTNESS, "reset begin");
     if (queue_) {
         queue_.reset();
+        std::lock_guard<ffrt::mutex> lock(screenOffDelayTaskMutex_);
         g_screenOffDelayTaskHandle = nullptr;
         DISPLAY_HILOGI(FEAT_BRIGHTNESS, "destruct display_power_queue");
     }
@@ -275,12 +276,14 @@ bool DisplayPowerMgrService::SetDisplayStateInner(uint32_t id, DisplayState stat
         displayState_ = state;
         displayReason_ = reason;
         FFRTTask task = [this]() { ScreenOffDelay(displayId_, displayState_, displayReason_); };
+        std::lock_guard<ffrt::mutex> lock(screenOffDelayTaskMutex_);
         g_screenOffDelayTaskHandle = FFRTUtils::SubmitDelayTask(task, displayOffDelayMs_, queue_);
         iterator->second->SetDelayOffState();
         return true;
     } else if (state == DisplayState::DISPLAY_ON) {
         if (isDisplayDelayOff_) {
             DISPLAY_HILOGI(COMP_SVC, "need remove delay task");
+            std::lock_guard<ffrt::mutex> lock(screenOffDelayTaskMutex_);
             FFRTUtils::CancelTask(g_screenOffDelayTaskHandle, queue_);
             isDisplayDelayOff_ = false;
             iterator->second->SetOnState();
