@@ -34,6 +34,8 @@ namespace DisplayMgr {
         }                                                                               \
     } while (0)                                                                         \
 
+#define IS_OUT_RANGE(value, lower, upper) ((value) < (lower) || (value) > (upper))
+
 #define RETURN_IF_READ_PARCEL_FAILED_NO_RET(parcel, type, out)                                           \
     do {                                                                                \
         if (!(parcel).Read##type(out)) {                                                \
