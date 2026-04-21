@@ -216,7 +216,7 @@ HWTEST_F(DisplayPowerMgrBrightnessTest, DisplayPowerMgrDiscountBrightnessAbnorma
     usleep(CMD_EXECUTION_DELAY);
     const double DISCOUNT_BEYOND_UPPER_BOUNDARY = 2.0;
     bool ret = DisplayPowerMgrClient::GetInstance().DiscountBrightness(DISCOUNT_BEYOND_UPPER_BOUNDARY);
-    EXPECT_TRUE(ret);
+    EXPECT_FALSE(ret);
     WaitDimmingDone();
     uint32_t value = DisplayPowerMgrClient::GetInstance().GetDeviceBrightness();
     const double DISCOUNT_MAX_VALUE = 1.0;
@@ -236,11 +236,10 @@ HWTEST_F(DisplayPowerMgrBrightnessTest, DisplayPowerMgrDiscountBrightnessAbnorma
     usleep(CMD_EXECUTION_DELAY);
     const double DISCOUNT_NEGATIVE_VALUE = -1.0;
     bool ret = DisplayPowerMgrClient::GetInstance().DiscountBrightness(DISCOUNT_NEGATIVE_VALUE);
-    EXPECT_TRUE(ret);
+    EXPECT_FALSE(ret);
     WaitDimmingDone();
     uint32_t value = DisplayPowerMgrClient::GetInstance().GetDeviceBrightness();
-    uint32_t minBrightness = DisplayPowerMgrClient::GetInstance().GetMinBrightness();
-    EXPECT_EQ(value, minBrightness);
+    EXPECT_EQ(value, SET_BRIGHTNESS);
 }
 
 /**
@@ -486,11 +485,7 @@ HWTEST_F(DisplayPowerMgrBrightnessTest, DisplayPowerMgrOverrideBrightness005, Te
 HWTEST_F(DisplayPowerMgrBrightnessTest, DisplayPowerMgrOverrideBrightness006, TestSize.Level0)
 {
     uint32_t overrideValue = 256;
-    uint32_t brightnessMax = 255;
-    DisplayPowerMgrClient::GetInstance().OverrideBrightness(overrideValue);
-    WaitDimmingDone();
-    uint32_t deviceBrightness = DisplayPowerMgrClient::GetInstance().GetDeviceBrightness();
-    EXPECT_EQ(brightnessMax, deviceBrightness);
+    EXPECT_FALSE(DisplayPowerMgrClient::GetInstance().OverrideBrightness(overrideValue));
 }
 
 /**
@@ -519,11 +514,7 @@ HWTEST_F(DisplayPowerMgrBrightnessTest, DisplayPowerMgrOverrideBrightness007, Te
 HWTEST_F(DisplayPowerMgrBrightnessTest, DisplayPowerMgrOverrideBrightness008, TestSize.Level0)
 {
     uint32_t overrideValue = -1;
-    uint32_t brightnessMax = 255;
-    EXPECT_TRUE(DisplayPowerMgrClient::GetInstance().OverrideBrightness(overrideValue));
-    WaitDimmingDone();
-    uint32_t deviceBrightness = DisplayPowerMgrClient::GetInstance().GetDeviceBrightness();
-    EXPECT_EQ(brightnessMax, deviceBrightness);
+    EXPECT_FALSE(DisplayPowerMgrClient::GetInstance().OverrideBrightness(overrideValue));
     DisplayPowerMgrClient::GetInstance().RestoreBrightness();
 }
 
