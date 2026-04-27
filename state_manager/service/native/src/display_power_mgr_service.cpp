@@ -55,6 +55,11 @@ const uint32_t TEST_MODE = 1;
 const uint32_t NORMAL_MODE = 2;
 const uint32_t BOOTED_COMPLETE_DELAY_TIME = 2000;
 const int32_t ERR_OK = 0;
+
+#define CHECK_PARAM_WITH_RET(value, lower, upper, ret) \
+    RETURN_IF_WITH_RET(IS_OUT_RANGE(value, lower, upper), ret)
+#define CHECK_PARAM_DURATION(value) \
+    RETURN_IF_WITH_RET(IS_OUT_RANGE(value, 0, 60 * 1000), false)
 }
 
 const uint32_t DisplayPowerMgrService::BRIGHTNESS_MIN = DisplayParamHelper::GetMinBrightness();
@@ -353,6 +358,7 @@ bool DisplayPowerMgrService::DiscountBrightnessInner(double discount, uint32_t d
     if (!Permission::IsSystem()) {
         return false;
     }
+    CHECK_PARAM_WITH_RET(discount, 0.0, 1.0, false);
     auto iter = controllerMap_.find(displayId);
     if (iter == controllerMap_.end()) {
         return false;
@@ -367,6 +373,8 @@ bool DisplayPowerMgrService::OverrideBrightnessInner(uint32_t brightness, uint32
     }
     DISPLAY_HILOGI(COMP_SVC, "OverrideBrightness displayId=%{public}u, value=%{public}u, duration=%{public}d",
         displayId, brightness, duration);
+    CHECK_PARAM_WITH_RET(brightness, 0, 255, false);
+    CHECK_PARAM_DURATION(duration);
     auto iter = controllerMap_.find(displayId);
     if (iter == controllerMap_.end()) {
         return false;
@@ -397,6 +405,7 @@ bool DisplayPowerMgrService::RestoreBrightnessInner(uint32_t displayId, uint32_t
     }
     DISPLAY_HILOGI(COMP_SVC, "RestoreBrightness displayId=%{public}u, duration=%{public}d",
         displayId, duration);
+    CHECK_PARAM_DURATION(duration);
     auto iter = controllerMap_.find(displayId);
     if (iter == controllerMap_.end()) {
         return false;
@@ -440,6 +449,8 @@ bool DisplayPowerMgrService::AdjustBrightnessInner(uint32_t id, int32_t value, u
     }
     DISPLAY_HILOGI(FEAT_BRIGHTNESS, "AdjustBrightness %{public}d, %{public}d, %{public}d",
                    id, value, duration);
+    CHECK_PARAM_WITH_RET(value, 0, 255, false);
+    CHECK_PARAM_DURATION(duration);
     auto iterator = controllerMap_.find(id);
     if (iterator == controllerMap_.end()) {
         return false;
@@ -709,6 +720,7 @@ bool DisplayPowerMgrService::SetMaxBrightnessInner(double value, uint32_t mode)
         DISPLAY_HILOGE(COMP_SVC, "SetMaxBrightness Permission Error!");
         return false;
     }
+    CHECK_PARAM_WITH_RET(value, 0.0, 1.0, false);
     if (mode == TEST_MODE) {
         isInTestMode_ = true;
         DISPLAY_HILOGI(COMP_SVC, "SetMaxBrightness enter TestMode");
@@ -740,6 +752,7 @@ bool DisplayPowerMgrService::SetMaxBrightnessNitInner(uint32_t maxNit, uint32_t 
         DISPLAY_HILOGE(COMP_SVC, "SetMaxBrightness Permission Error!");
         return false;
     }
+    CHECK_PARAM_WITH_RET(maxNit, 0, 100 * 1000, false);
     if (mode == TEST_MODE) {
         isInTestMode_ = true;
         DISPLAY_HILOGI(COMP_SVC, "SetMaxBrightness enter TestMode");

@@ -237,7 +237,6 @@ private:
     std::atomic<bool> mWaitForFirstLux{false};
     std::atomic<uint32_t> mCurrentBrightness{DEFAULT_BRIGHTNESS};
     std::once_flag mInitCallFlag;
-    std::mutex mBoostHandleLock{};
     std::mutex mFirstLuxHandleLock{};
 };
 } // namespace DisplayPowerMgr
