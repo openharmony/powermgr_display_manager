@@ -1,0 +1,58 @@
+# Copyright (c) 2026 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("../../../displaymgr.gni")
+
+config("ohos_display_manager_cli_config") {
+  include_dirs = [
+    ".",
+    "${displaymgr_inner_api}/native/include",
+    "${displaymgr_utils_path}/native/include",
+  ]
+}
+
+ohos_executable("ohos-displayManager") {
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+  branch_protector_ret = "pac_ret"
+
+  sources = [
+    "cli_command.cpp",
+    "main.cpp",
+  ]
+
+  configs = [ ":ohos_display_manager_cli_config" ]
+
+  deps = [
+    "${displaymgr_inner_api}:displaymgr",
+  ]
+
+  external_deps = [
+    "cJSON:cjson",
+    "c_utils:utils",
+    "hilog:libhilog",
+    "ipc:ipc_core",
+    "power_manager:powermgr_client",
+    "samgr:samgr_proxy",
+  ]
+
+  install_enable = true
+  install_images = [ "system" ]
+  relative_install_dir = "cli_tool/executable"
+
+  subsystem_name = "powermgr"
+  part_name = "${displaymgr_part_name}"
+}
