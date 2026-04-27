@@ -910,9 +910,7 @@ bool BrightnessService::CancelBoostBrightness(uint32_t gradualDuration)
         DISPLAY_HILOGD(FEAT_BRIGHTNESS, "Brightness is not boost, no need to restore");
         return false;
     }
-    mBoostHandleLock.lock();
     FFRT_CANCEL(g_cancelBoostTaskHandle, queue_);
-    mBoostHandleLock.unlock();
     mIsBrightnessBoosted = false;
     return UpdateBrightness(mCachedSettingBrightness, gradualDuration, true);
 }
