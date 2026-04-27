@@ -1,0 +1,53 @@
+# Copyright (c) 2026 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/test.gni")
+import("../../../displaymgr.gni")
+
+module_output_path = "display_manager/ohos_display_manager_cli"
+
+ohos_unittest("unittest_ohos_display_manager_cli") {
+  module_out_path = module_output_path
+
+  defines += [ "CLI_UT_TEST" ]
+
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
+  sources = [
+    "../src/cli_command.cpp",
+    "ohos_display_manager_test.cpp",
+  ]
+
+  include_dirs = [
+    ".",
+    "..",
+    "../src",
+    "${displaymgr_inner_api}/native/include",
+    "${displaymgr_utils_path}/native/include",
+  ]
+
+  configs = [ "${displaymgr_utils_path}:coverage_flags" ]
+
+  external_deps = [
+    "cJSON:cjson",
+    "c_utils:utils",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
+    "hilog:libhilog",
+  ]
+}
+

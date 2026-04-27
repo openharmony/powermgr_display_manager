@@ -21,7 +21,8 @@
     ],
     "features": [
       "display_manager_feature_brightnessext",
-      "display_manager_feature_poweroff_strategy"
+      "display_manager_feature_poweroff_strategy",
+      "display_manager_feature_support_display_cli"
     ],
     "adapted_system_type": [ "standard" ],
     "rom": "1024KB",
@@ -62,7 +63,8 @@
         "fwk_group": [
           "//base/powermgr/display_manager/state_manager/frameworks/napi:brightness",
           "//base/powermgr/display_manager/state_manager/frameworks/ets/taihe:display_manager_taihe",
-          "//base/powermgr/display_manager/state_manager/interfaces/inner_api:displaymgr"
+          "//base/powermgr/display_manager/state_manager/interfaces/inner_api:displaymgr",
+          "//base/powermgr/display_manager/tools/ohos-displayManager:ohos-displayManager-cli"
         ],
         "service_group": [
           "//base/powermgr/display_manager/state_manager/sa_profile:displaymgr_sa_profile",
@@ -85,7 +87,8 @@
         "//base/powermgr/display_manager/state_manager/test:displaymgr_fuzztest",
         "//base/powermgr/display_manager/state_manager/test:systemtest",
         "//base/powermgr/display_manager/brightness_manager/test:brightness_manager_test",
-        "//base/powermgr/display_manager/state_manager/frameworks/ets/taihe:display_manager_taihe_test"
+        "//base/powermgr/display_manager/state_manager/frameworks/ets/taihe:display_manager_taihe_test",
+        "//base/powermgr/display_manager/tools/ohos-displayManager:ohos-displayManager-cli-test"
       ]
     }
   }
