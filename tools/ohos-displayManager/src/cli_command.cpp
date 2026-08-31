@@ -14,13 +14,13 @@
  */
 
 #include "cli_command.h"
+#include "parse_brightness_u32.h"
 
 #include <iostream>
 #include <string>
 #include <unordered_map>
 #include <functional>
 #include <cstring>
-#include <cstdlib>
 #include "cJSON.h"
 
 #include "display_mgr_errors.h"
@@ -37,7 +37,6 @@ namespace OHOS {
 namespace DisplayPowerMgr {
 
 static const uint32_t BRIGHTNESS_MAX_VALUE = 255;
-static const uint32_t DECIMAL_BASE = 10;
 static const int32_t ARG_OFFSET = 2;
 static const int32_t SUBCMD_HELP_ARGC = 3;
 static const char* const UNKNOWN_ARG_HELP_SUFFIX =
@@ -122,9 +121,7 @@ SetBrightnessArgs ParseSetBrightnessArgs(int argc, char** argv)
                 break;
             }
             args.hasValue = true;
-            char* endPtr = nullptr;
-            args.value = static_cast<uint32_t>(std::strtoul(argv[i + 1], &endPtr, DECIMAL_BASE));
-            if (endPtr == argv[i + 1] || *endPtr != '\0') {
+            if (!ParseBrightnessU32(argv[i + 1], args.value)) {
                 args.unknownArg = argv[i + 1];
             }
             i++;
